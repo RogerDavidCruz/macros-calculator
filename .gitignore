@@ -1,5 +1,12 @@
 #npm package
 package-lock.json
+package.json
+
+#Node Modules
+node_modules
+
+#Git Ignore
+.gitignore
 
 # Logs
 logs
