@@ -8,8 +8,55 @@
               <a href="/logout" class="col-3 btn btn-primary">Logout</a>
           </div>
           <div class="mt-5">
-            <h2>Add a post</h2>
+            <h2>Figure out Your Calorie Needs</h2>
+            <span>Total Daily Energy Expenditure (TDEE)</span> <br>
+            <span>Mifflin-St. Jeor equation</span>
+              <ul>
+                <li>Men: calories/day = 10 * weight(kg) + 6.25 x height (cm) - 5 x age(years) + 5 * (activity level)</li> 
+                <li>Women: calories/day = 10 * weight(kg) + 6.25 x height (cm) - 5 x age(years) - 161 * (activity level)</li>
+              </ul>
             <form action="/post/createPost" enctype="multipart/form-data" method="POST">
+              <div class="mb-3">
+                <label for="body" class="form-body">Sex:</label>
+                <select name="body" id="body">
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label for="weight" class="form-weight">Weight (kg)</label>
+                <input type="text" class="form-control" id="weight" name="weight">
+              </div>
+              <div class="mb-3">
+                <label for="height" class="form-height">Height (cm)</label>
+                <input type="text" class="form-control" id="height" name="height">
+              </div>
+              <div class="mb-3">
+                <label for="height" class="form-height">Age (years)</label>
+                <input type="text" class="form-control" id="age" name="age">
+              </div>
+              <div class="mb-3">
+                <label for="activity" class="form-activity">Choose an activity level:</label>
+                <select name="activity" id="activity">
+                  <option value="sedentary">Sedentary</option>
+                  <option value="lightly_active">Lightly Active</option>
+                  <option value="moderately_active">Moderately Active</option>
+                  <option value="very_active">Very Active</option>
+                  <option value="extra_active">Extra Active</option>
+                </select>
+              </div>
+              <div class="mb-3" class="form-goal">
+                <span>Lose Weight</span>
+                <label class="switch">
+                  <input type="checkbox">
+                  <span class="slider round"></span>
+                </label>
+                <span>Gain Muscle</span>
+              </div>
+
+            
+              <span>Seperate Old vs New</span>
+
               <div class="mb-3">
                   <label for="title" class="form-label">Title</label>
                   <input type="text" class="form-control" id="title" name="title">
@@ -22,7 +69,9 @@
                 <label for="imgUpload" class="form-label">Image</label>
                 <input type="file" class="form-control" id="imageUpload" name="file">
               </div>
+
               <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
+
             </form>
           </div>
       </div>
