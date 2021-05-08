@@ -31,10 +31,20 @@ module.exports = {
       // Upload image to cloudinary
       const result = await cloudinary.uploader.upload(req.file.path);
 
+      // console.log(req, 'req FISH')
+      // console.log(res, 'res DOGE')
+      
+      // Create todal daily energy expendenture
+      // Men: calories/day = 10 * weight(kg) + 6.25 x height (cm) - 5 x age(years) + 5 * (activity level)
+      const tdeeNum = (((req.body.weight * req.body.height) - 5) * (req.body.age));
+
+      console.log(tdeeNum, 'BIRD')
+
       await Post.create({
         weight: req.body.weight,
         height: req.body.height,
         age: req.body.age,
+        tdee: tdeeNum,
         image: result.secure_url,
         cloudinaryId: result.public_id,
         likes: 0,

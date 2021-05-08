@@ -13,6 +13,10 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  tdee : {
+    type: Number,
+    required: true,
+  },
   image: {
     type: String,
     require: true,
