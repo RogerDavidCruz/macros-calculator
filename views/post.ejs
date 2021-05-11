@@ -2,7 +2,7 @@
 <div class="container">
   <div class="row justify-content-center mt-5">
     <div class="col-6">
-      <h2>Weight: <%= post.weight %></h2>
+      <h2>My Meal on: <%= post.createdAt %></h2>
       <img class="img-fluid" src="<%= post.image%>" />
       <div class="row justify-content-between">
         <form
@@ -24,11 +24,20 @@
         <%}%>
       </div>
     </div>
-    <div class="col-3 mt-5">
-      <p>Weight: <%= post.weight %></p>
-      <p>Height: <%= post.height %></p>
-      <p>Age: <%= post.age %></p>
-    </div>
+    <ul class="col-3 mt-5">
+      <li> 
+        <form
+        action="/post/likePost/<%= post.id %>?_method=PUT"
+        method="POST"
+      >
+        <span>Weight: <%= post.weight %> kg</span>
+        <button class="btn btn-primary fa fa-edit" type="submit"></button>
+      </form>
+      </li>
+      <li>Height: <%= post.height %> cm</li>
+      <li>Age: <%= post.age %> years</li>
+      <li>TDEE: <%= post.tdee %> calories/day</li>
+    </ul>
     <div class="col-6 mt-5">
       <a class="btn btn-primary" href="/profile">Return to Profile</a>
       <a class="btn btn-primary" href="/feed">Return to Feed</a>

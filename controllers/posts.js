@@ -30,15 +30,16 @@ module.exports = {
     try {
       // Upload image to cloudinary
       const result = await cloudinary.uploader.upload(req.file.path);
-
-      // console.log(req, 'req FISH')
-      // console.log(res, 'res DOGE')
       
       // Create todal daily energy expendenture
       // Men: calories/day = 10 * weight(kg) + 6.25 x height (cm) - 5 x age(years) + 5 * (activity level)
-      const tdeeNum = (((req.body.weight * req.body.height) - 5) * (req.body.age));
+      const tdeeNum = (10 * req.body.weight) + (6.25 * req.body.height) - (5 * req.body.age) + 5;
+      //1787.5 calories/day TDEE //Roger
 
-      console.log(tdeeNum, 'BIRD')
+      // Women: calories/day = 10 x weight (kg) + 6.25 x height (cm) – 5 x age (y) – 161
+
+      //conditional if male use male calculation, if female use female calculation
+
 
       await Post.create({
         weight: req.body.weight,
@@ -57,6 +58,9 @@ module.exports = {
     }
   },
   likePost: async (req, res) => {
+
+    console.log(req, 'AIRPLANE')
+    
     try {
       await Post.findOneAndUpdate(
         { _id: req.params.id },

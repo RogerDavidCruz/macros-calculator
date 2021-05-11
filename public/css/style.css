@@ -1,3 +1,44 @@
+/* CSS for partials -> header */
+
+html { 
+  background: url(/imgs/background-food-pic.jpeg) no-repeat center center fixed; 
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+body {
+  background: rgb(220,220,220);
+}
+
+h1{
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 > a {
+  text-decoration: none;
+}
+
+h1 ~ span {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #0d6efd;
+  font-style: italic;
+}
+
+#center-auth-index {
+  margin-top: 40vh;
+}
+
+#center-auth-login {
+  margin-top: 30vh;
+}
+
+#center-auth-signup {
+  margin-top: 20vh;
+}
+
+/* CSS for slider */
 .switch {
   position: relative;
   display: inline-block;
