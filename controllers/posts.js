@@ -74,6 +74,22 @@ module.exports = {
       console.log(err);
     }
   },
+  updateStats: async (req, res) => {
+    console.log('updating measurements');
+    try {
+      await Post.findOneAndUpdate(
+        {_id: req.params.id},
+        {weight: req.body.weight},
+        {height: req.body.height},
+        {age: req.body.age},
+        {tdee: tdeeNum},
+      );
+      console.log("update measurements");
+      res.redirect(`/post/${req.params.id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  },
   deletePost: async (req, res) => {
     try {
       // Find post by id

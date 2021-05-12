@@ -24,20 +24,33 @@
         <%}%>
       </div>
     </div>
-    <ul class="col-3 mt-5">
-      <li> 
-        <form
-        action="/post/likePost/<%= post.id %>?_method=PUT"
-        method="POST"
-      >
-        <span>Weight: <%= post.weight %> kg</span>
-        <button class="btn btn-primary fa fa-edit" type="submit"></button>
-      </form>
-      </li>
-      <li>Height: <%= post.height %> cm</li>
-      <li>Age: <%= post.age %> years</li>
-      <li>TDEE: <%= post.tdee %> calories/day</li>
-    </ul>
+    <div class="col-3 mt-5">
+      <ul>
+        <li>Weight: <%= post.weight %> kg </li>
+        <li>Height: <%= post.height %> cm</li>
+        <li>Age: <%= post.age %> years</li>
+        <li>TDEE: <%= post.tdee %> calories/day</li>
+        <button class="btn btn-primary fa fa-edit" type="submit">Edit</button>
+      </ul>
+    </div>    
+  <form
+    action="/post/updateStats/<%= post.id %>?_method=PUT"
+    method="POST"
+  >
+    <div class="mb-3">
+      <label for="weight" class="form-label">Weight</label>
+      <input type="text" class="form-control" id="weight" name="weight">
+    </div>
+      <div class="mb-3">
+  <label for="height" class="form-label">Height</label>
+  <textarea class="form-control" id="height" name="height"></textarea>
+      </div>
+    <div class="mb-3">
+      <label for="age" class="form-label">Age</label>
+      <textarea class="form-control" id="age" name="age"></textarea>
+    </div>
+  </form>
+
     <div class="col-6 mt-5">
       <a class="btn btn-primary" href="/profile">Return to Profile</a>
       <a class="btn btn-primary" href="/feed">Return to Feed</a>
