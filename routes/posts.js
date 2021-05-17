@@ -13,6 +13,12 @@ router.put("/likePost/:id", postsController.likePost);
 
 router.put("/updateStats/:id", postsController.updateStats);
 
+router.put("/ateProtein/:id", postsController.ateProtein);
+
+router.put("/ateCarbohydrates/:id", postsController.ateCarbohydrates);
+
+router.put("/ateFats/:id", postsController.ateFats);
+
 router.delete("/deletePost/:id", postsController.deletePost);
 
 module.exports = router;

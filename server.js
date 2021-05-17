@@ -59,5 +59,5 @@ app.use("/post", postRoutes);
 
 //server running
 app.listen(process.env.PORT, () => {
-  console.log("Server is running smoothly, keep up the pace!")
+  console.log(`Server is running smoothly, keep up the pace on localhost: ${process.env.PORT}`)
 });

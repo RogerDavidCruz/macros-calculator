@@ -24,7 +24,7 @@
         <%}%>
       </div>
     </div>
-    <div class="col-3 mt-5">
+    <div class="col-6 mt-5">
       <ul>
         <li>Weight: <%= post.weight %> kg </li>
         <li>Height: <%= post.height %> cm</li>
@@ -32,6 +32,36 @@
         <li>TDEE: <%= post.tdee %> calories/day</li>
         <button class="btn btn-primary fa fa-edit" type="submit">Edit</button>
       </ul>
+
+<!-- ******* -->
+    <span>Protein Servings: <%= post.protein %></span>
+    <form
+    class="col-1"
+    action="/post/ateProtein/<%= post.id %>?_method=PUT"
+    method="POST"
+  >
+    <button class="btn btn-primary fas fa-fish" type="submit"></button>
+  </form>
+
+    <span>Carbohydrates Servings: <%= post.carbohydrates %></span>
+    <form
+    class="col-1"
+    action="/post/ateCarbohydrates/<%= post.id %>?_method=PUT"
+    method="POST"
+  >
+    <button class="btn btn-primary fas fa-bread-slice" type="submit"></button>
+  </form>
+
+  <span>Fats Servings: <%= post.fats %></span>
+  <form
+  class="col-1"
+  action="/post/ateFats/<%= post.id %>?_method=PUT"
+  method="POST"
+  >
+  <button class="btn btn-primary fas fa-cheese" type="submit"></button>
+  </form>
+  <!-- ******* -->
+
     </div>    
   <form
     action="/post/updateStats/<%= post.id %>?_method=PUT"

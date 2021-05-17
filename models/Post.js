@@ -29,6 +29,18 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
+  protein: {
+    type: Boolean,
+    required: true,
+  },
+  carbohydrates: {
+    type: Boolean,
+    required: true,
+  },
+  fats: {
+    type: Boolean,
+    required: true,
+  },
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",

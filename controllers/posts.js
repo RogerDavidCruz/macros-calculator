@@ -49,6 +49,9 @@ module.exports = {
         image: result.secure_url,
         cloudinaryId: result.public_id,
         likes: 0,
+        protein: false,
+        carbohydrates: false,
+        fats: false,
         user: req.user.id,
       });
       console.log("Post has been added!");
@@ -72,6 +75,54 @@ module.exports = {
       res.redirect(`/post/${req.params.id}`);
     } catch (err) {
       console.log(err);
+    }
+  },
+  ateProtein: async (req, res) => {
+
+    console.log(req, 'protein')
+    
+    try {
+      await Post.findOneAndUpdate(
+        { _id: req.params.id },
+        {
+          protein: true,
+        }
+      );
+      console.log("protein true");
+      res.redirect(`/post/${req.params.id}`);
+    } catch (err) {
+      console.log(err);
+    }
+  },
+  ateCarbohydrates: async (req, res) => {
+    console.log(req, 'carbohydrates')
+      try {
+        await Post.findOneAndUpdate(
+          { _id: req.params.id},
+          {
+            carbohydrates: true,
+          }
+        );
+        console.log("ateCarbohydrates");
+        res.redirect(`/post/${req.params.id}`);
+      } catch (err) {
+        console.log(err)
+      }  
+  },
+  ateFats: async (req, res) => {
+    console.log(req, 'carbohydrates')
+
+    try {
+      await Post.findOneAndUpdate(
+        { _id: req.params.id},
+        {
+          fats: true,
+        }
+      );
+      console.log("ateCarbohydrates");
+      res.redirect(`/post/${req.params.id}`);
+    } catch (err) {
+      console.log(err)
     }
   },
   updateStats: async (req, res) => {
