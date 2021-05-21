@@ -1,6 +1,18 @@
 const mongoose = require("mongoose");
 
 const PostSchema = new mongoose.Schema({
+  system: {
+    type: String,
+    required: true,
+  },
+  gender: {
+    type: String,
+    required: true,
+  },
+  age: {
+    type: Number,
+    required: true,
+  },
   weight: {
     type: Number,
     required: true,
@@ -9,8 +21,8 @@ const PostSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  age: {
-    type: Number,
+  activityLevel: {
+    type: String,
     required: true,
   },
   tdee : {

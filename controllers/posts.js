@@ -31,6 +31,8 @@ module.exports = {
       // Upload image to cloudinary
       const result = await cloudinary.uploader.upload(req.file.path);
       
+
+      //Mifflin-St. Jeor equation:
       // Create todal daily energy expendenture
       // Men: calories/day = 10 * weight(kg) + 6.25 x height (cm) - 5 x age(years) + 5 * (activity level)
       const tdeeNum = (10 * req.body.weight) + (6.25 * req.body.height) - (5 * req.body.age) + 5;
@@ -42,9 +44,12 @@ module.exports = {
 
 
       await Post.create({
+        system: req.body.system,
+        gender: req.body.gender,
+        age: req.body.age,
         weight: req.body.weight,
         height: req.body.height,
-        age: req.body.age,
+        activityLevel: req.body.activityLevel,
         tdee: tdeeNum,
         image: result.secure_url,
         cloudinaryId: result.public_id,
