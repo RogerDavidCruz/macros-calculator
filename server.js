@@ -58,6 +58,6 @@ app.use("/", mainRoutes);
 app.use("/post", postRoutes);
 
 //server running
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 5000, () => {
   console.log(`Server is running smoothly, keep up the pace on localhost: ${process.env.PORT}`)
 });
