@@ -10,6 +10,7 @@ const logger = require("morgan");
 const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
+const PORT = process.env.PORT || 3000
 
 //.env file inside config folder
 require("dotenv").config({path: "./config/.env"});
@@ -58,6 +59,6 @@ app.use("/", mainRoutes);
 app.use("/post", postRoutes);
 
 //server running
-app.listen(process.env.PORT, () => {
-  console.log(`Server is running smoothly, keep up the pace on localhost: ${process.env.PORT}`)
+app.listen(PORT, () => {
+  console.log(`Server is running smoothly, keep up the pace on localhost: ${PORT}`)
 });
