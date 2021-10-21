@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const port = process.env.PORT || 8080;
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
@@ -10,7 +11,6 @@ const logger = require("morgan");
 const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
-const port = process.env.PORT || 3000
 
 //.env file inside config folder
 require("dotenv").config({path: "./config/.env"});
