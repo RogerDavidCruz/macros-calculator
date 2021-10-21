@@ -1,64 +1,53 @@
-const express = require("express");
-const app = express();
-const port = process.env.PORT || 8080;
-const mongoose = require("mongoose");
-const passport = require("passport");
-const session = require("express-session");
-const MongoStore = require("connect-mongo")(session);
-const methodOverride = require("method-override");
-const flash = require("express-flash");
-const logger = require("morgan");
-const connectDB = require("./config/database");
-const mainRoutes = require("./routes/main");
-const postRoutes = require("./routes/posts");
+const express  = require('express');
+const app      = express();
+const port     = process.env.PORT || 8080;
+const mongoose = require('mongoose');
+const passport = require('passport');
+const flash    = require('connect-flash');
+const multer = require('multer');
+const ObjectId = require('mongodb').ObjectID
 
-//.env file inside config folder
-require("dotenv").config({path: "./config/.env"});
+const morgan       = require('morgan');
+const cookieParser = require('cookie-parser');
+const bodyParser   = require('body-parser');
+const session      = require('express-session');
 
-//passport config
-require("./config/passport")(passport);
+const configDB = require('./config/database.js');
 
-//connect to database
-connectDB();
-
-//using EJS for views
-app.set("view engine", "ejs");
-
-//static folder
-app.use(express.static("public"));
-
-//body parsing
-app.use(express.urlencoded({ extended: true}));
-app.use(express.json());
-
-//logging
-app.use(logger("dev"));
-
-//use forms for put / delete
-app.use(methodOverride("_method"));
-
-//set up sessions - stored in MongoDB
-app.use(
-  session({
-    secret: "keyboard doge",
-    resave: false,
-    saveUninitialized: false,
-    store: new MongoStore({ mongooseConnection: mongoose.connection}),
-  })
-)
-
-//passport middleware
-app.use(passport.initialize());
-app.use(passport.session());
-
-//use flash messages for errors, info, etc...
-app.use(flash());
-
-//setup routes for which server is listening
-app.use("/", mainRoutes);
-app.use("/post", postRoutes);
-
-//server running
-app.listen(port, () => {
-  console.log(`Server is running smoothly, keep up the pace on localhost: ${port}`)
+// configuration ===============================================================
+mongoose.set('useNewUrlParser', true);
+mongoose.set('useUnifiedTopology', true);
+// connect to our database
+mongoose.connect(configDB.url, (err, database) => {
+  if (err) return console.log(err)
+  connect(database)
 });
+
+// set up our express application
+app.use(morgan('dev')); // log every request to the console
+app.use(cookieParser()); // read cookies (needed for auth)
+app.use(bodyParser.json()); // get information from html forms
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.static('public'))
+
+app.set('view engine', 'ejs'); // set up ejs for templating
+
+// required for passport
+require('./config/passport')(passport); // pass passport for configuration
+app.use(session({
+    secret: 'rcbootcamp2019c', // session secret
+    resave: true,
+    saveUninitialized: true
+}));
+app.use(passport.initialize());
+app.use(passport.session()); // persistent login sessions
+app.use(flash()); // use connect-flash for flash messages stored in session
+
+
+// routes ======================================================================
+const connect = (db) => require('./app/routes.js')(app, passport, db, multer, ObjectId); // load our routes and pass in our app and fully configured passport
+
+
+// launch ======================================================================
+app.listen(port);
+console.log('The magic happens on port ' + port);
