@@ -1,6 +1,9 @@
+require("dotenv").config({ path: "./config/.env" });
+
 const express = require("express");
 const app = express();
-const port = process.env.PORT || 8080;
+
+const port = process.env.PORT || 9090; // will read from .env now
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
@@ -12,53 +15,67 @@ const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
 
-//.env file inside config folder
-require("dotenv").config({path: "./config/.env"});
+// If running behind a proxy (Render/Heroku/etc.), trust the proxy in production
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 
-//passport config
+// TEMP sanity checks — remove after it works
+console.log("NODE_ENV =", process.env.NODE_ENV);
+console.log("PORT     =", process.env.PORT);
+console.log("DB_STRING defined? ", Boolean(process.env.DB_STRING));
+
+// Passport config
 require("./config/passport")(passport);
 
-//connect to database
+// Connect to database
 connectDB();
 
-//using EJS for views
+// Using EJS for views
 app.set("view engine", "ejs");
 
-//static folder
+// Static folder
 app.use(express.static("public"));
 
-//body parsing
-app.use(express.urlencoded({ extended: true}));
+// Body parsing
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
-//logging
+// Logging
 app.use(logger("dev"));
 
-//use forms for put / delete
+// Use forms for PUT/DELETE
 app.use(methodOverride("_method"));
 
-//set up sessions - stored in MongoDB
+// Set up sessions - stored in MongoDB
 app.use(
   session({
-    secret: "keyboard doge",
+    secret: process.env.SESSION_SECRET || "keyboard doge",
     resave: false,
     saveUninitialized: false,
-    store: new MongoStore({ mongooseConnection: mongoose.connection}),
+    store: new MongoStore({ mongooseConnection: mongoose.connection }),
+    cookie: {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+    },
   })
-)
+);
 
-//passport middleware
+// Passport middleware
 app.use(passport.initialize());
 app.use(passport.session());
 
-//use flash messages for errors, info, etc...
+// Flash messages
 app.use(flash());
 
-//setup routes for which server is listening
+// Routes
 app.use("/", mainRoutes);
 app.use("/post", postRoutes);
 
-//server running
+// Server
 app.listen(port, () => {
-  console.log(`Server is running smoothly, keep up the pace on localhost: ${port}`)
+  console.log(
+    `Server is running smoothly, keep up the pace on localhost: ${port}`
+  );
 });

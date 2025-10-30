@@ -2,16 +2,20 @@
   - CRUD and Authentication
   - Application to calculate your macro nutrients based on your fitness goal.
   - Allow daily counting macro posts of meals with pictures of your meal
+  - Application uses MongoDB database
 
 ---
 
-# Install
+# How to Run This App?
+
+
+# Step 1: NPM Install
 
 `npm install`
 
 ---
 
-# Things to add
+# Step 2: Create .env file and add following variables
 
 - Create a `.env` file and add the following as `key = value`
   - PORT = 9090 (can be any port example: 3001)
@@ -22,7 +26,7 @@
 
 ---
 
-# Run
+# Step 3: Run the app using npm
 
 `npm start`
 
