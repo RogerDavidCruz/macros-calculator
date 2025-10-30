@@ -2,115 +2,118 @@ const passport = require("passport");
 const validator = require("validator");
 const User = require("../models/User");
 
+/**
+ * GET /login
+ */
 exports.getLogin = (req, res) => {
-  if (req.user) {
-    return res.redirect("/profile");
-  }
-  res.render("login", {
-    title: "Login",
-  });
+  if (req.user) return res.redirect("/profile");
+  res.render("login", { title: "Login" });
 };
 
+/**
+ * POST /login
+ * Uses passport-local; no DB callbacks here.
+ */
 exports.postLogin = (req, res, next) => {
   const validationErrors = [];
-  if (!validator.isEmail(req.body.email))
+  if (!validator.isEmail(req.body.email)) {
     validationErrors.push({ msg: "Please enter a valid email address." });
-  if (validator.isEmpty(req.body.password))
+  }
+  if (validator.isEmpty(req.body.password || "")) {
     validationErrors.push({ msg: "Password cannot be blank." });
-
+  }
   if (validationErrors.length) {
     req.flash("errors", validationErrors);
     return res.redirect("/login");
   }
+
+  // Normalize email consistently
   req.body.email = validator.normalizeEmail(req.body.email, {
     gmail_remove_dots: false,
   });
 
   passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return next(err);
-    }
+    if (err) return next(err);
     if (!user) {
-      req.flash("errors", info);
+      req.flash("errors", info || { msg: "Login failed." });
       return res.redirect("/login");
     }
-    req.logIn(user, (err) => {
-      if (err) {
-        return next(err);
-      }
+    req.logIn(user, (err2) => {
+      if (err2) return next(err2);
       req.flash("success", { msg: "Success! You are logged in." });
-      res.redirect(req.session.returnTo || "/profile");
+      return res.redirect(req.session.returnTo || "/profile");
     });
   })(req, res, next);
 };
 
-exports.logout = (req, res) => {
-  req.logout();
-  req.session.destroy((err) => {
-    if (err)
-      console.log("Error : Failed to destroy the session during logout.", err);
-    req.user = null;
-    res.redirect("/");
-  });
-};
-
-exports.getSignup = (req, res) => {
-  if (req.user) {
-    return res.redirect("/profile");
-  }
-  res.render("signup", {
-    title: "Create Account",
-  });
-};
-
-exports.postSignup = (req, res, next) => {
-  const validationErrors = [];
-  if (!validator.isEmail(req.body.email))
-    validationErrors.push({ msg: "Please enter a valid email address." });
-  if (!validator.isLength(req.body.password, { min: 8 }))
-    validationErrors.push({
-      msg: "Password must be at least 8 characters long",
+/**
+ * GET /logout
+ * Passport 0.6 requires a callback.
+ */
+exports.logout = (req, res, next) => {
+  req.logout(function (err) {
+    if (err) return next(err);
+    req.session.destroy((destroyErr) => {
+      if (destroyErr) {
+        console.log("Error destroying session during logout:", destroyErr);
+      }
+      req.user = null;
+      return res.redirect("/");
     });
-  if (req.body.password !== req.body.confirmPassword)
-    validationErrors.push({ msg: "Passwords do not match" });
-
-  if (validationErrors.length) {
-    req.flash("errors", validationErrors);
-    return res.redirect("../signup");
-  }
-  req.body.email = validator.normalizeEmail(req.body.email, {
-    gmail_remove_dots: false,
   });
+};
 
-  const user = new User({
-    userName: req.body.userName,
-    email: req.body.email,
-    password: req.body.password,
-  });
+/**
+ * GET /signup
+ */
+exports.getSignup = (req, res) => {
+  if (req.user) return res.redirect("/profile");
+  res.render("signup", { title: "Create Account" });
+};
 
-  User.findOne(
-    { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
-    (err, existingUser) => {
-      if (err) {
-        return next(err);
-      }
-      if (existingUser) {
-        req.flash("errors", {
-          msg: "Account with that email address or username already exists.",
-        });
-        return res.redirect("../signup");
-      }
-      user.save((err) => {
-        if (err) {
-          return next(err);
-        }
-        req.logIn(user, (err) => {
-          if (err) {
-            return next(err);
-          }
-          res.redirect("/profile");
-        });
-      });
+/**
+ * POST /signup
+ * Mongoose v7+ (no callbacks) — async/await only.
+ */
+exports.postSignup = async (req, res, next) => {
+  try {
+    // Basic validation
+    const validationErrors = [];
+    if (!validator.isEmail(req.body.email)) {
+      validationErrors.push({ msg: "Please enter a valid email address." });
     }
-  );
+    if (!validator.isLength(req.body.password || "", { min: 6 })) {
+      validationErrors.push({ msg: "Password must be at least 6 characters." });
+    }
+    if (validationErrors.length) {
+      req.flash("errors", validationErrors);
+      return res.redirect("/signup");
+    }
+
+    // Normalize email
+    const email = validator.normalizeEmail(req.body.email, {
+      gmail_remove_dots: false,
+    });
+    const name = (req.body.name || "").trim();
+    const password = req.body.password;
+
+    // 1) Check for existing user
+    const existing = await User.findOne({ email }).exec();
+    if (existing) {
+      req.flash("errors", { msg: "Account with that email already exists." });
+      return res.redirect("/signup");
+    }
+
+    // 2) Create and save user (hashing handled by model pre('save') if defined)
+    const user = new User({ email, password, name });
+    await user.save();
+
+    // 3) Log them in
+    req.logIn(user, (err) => {
+      if (err) return next(err);
+      return res.redirect("/profile");
+    });
+  } catch (err) {
+    return next(err);
+  }
 };
