@@ -1,86 +1,86 @@
 <%- include('partials/header') -%>
 <div class="container">
   <div class="row mt-5">
-      <div class="col-6">
-          <div>
-              <p><strong>User Name</strong>: <%= user.userName %></p>
-              <p><strong>Email</strong>: <%= user.email %></p>
-              <a href="/logout" class="col-3 btn btn-primary">Logout</a>
-          </div>
-          <div class="mt-5">
-            <h2>Step 1: Figure out Your Calorie Needs</h2>
+    <div class="col-6">
+      <div class="d-flex align-items-center justify-content-between">
+        <div>
+          <p><strong>User Name</strong>: <%= (user && user.userName) || '' %></p>
+          <p><strong>Email</strong>: <%= (user && user.email) || '' %></p>
+        </div>
 
-            <span>Mifflin-St. Jeor equation</span>
-
-            <!-- <div class="mb-3" class="form-goal">
-              <span>Lose Weight</span>
-              <label class="switch">
-                <input type="checkbox">
-                <span class="slider round"></span>
-              </label>
-              <span>Gain Muscle</span>
-            </div> -->
-
-            <form action="/post/createPost" enctype="multipart/form-data" method="POST">
-              <div class="mb-3">
-                <label for="body" class="form-body">Sex:</label>
-                <select name="body" id="body">
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                  <label for="weight" class="form-label">Weight (kg)</label>
-                  <input type="text" class="form-control" id="weight" name="weight">
-              </div>
-              <div class="mb-3">
-                <label for="height" class="form-label">Height (cm) </label>
-                <textarea class="form-control" id="height" name="height"></textarea>
-              </div>
-              <div class="mb-3">
-                <label for="age" class="form-label">Age (years)</label>
-                <textarea class="form-control" id="age" name="age"></textarea>
-              </div>
-
-              <div class="mb-3">
-                <label for="activity" class="form-activity">Choose an activity level:</label>
-                <select name="activity" id="activity">
-                  <option value="sedentary">Sedentary</option>
-                  <option value="lightly_active">Lightly Active</option>
-                  <option value="moderately_active">Moderately Active</option>
-                  <option value="very_active">Very Active</option>
-                  <option value="extra_active">Extra Active</option>
-                </select>
-              </div>
-
-              <div class="mb-3">
-                <label for="imgUpload" class="form-label">Image</label>
-                <input type="file" class="form-control" id="imageUpload" name="file">
-              </div>
-
-              <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
-
-            </form>
-
-            <h2>Step 2: Decide Your Ideal Macronutrient Breakdown</h2>
-          </div>
+        <!-- POST /logout so the session is cleared correctly -->
+        <form action="/logout" method="POST" class="d-inline">
+          <button type="submit" class="col-3 btn btn-primary">Logout</button>
+        </form>
       </div>
-      <div class="col-6">
-        <ul class="row list-unstyled">
-        <% for(var i=0; i<posts.length; i++) {%>
+
+      <div class="mt-5">
+        <h2>Step 1: Figure out Your Calorie Needs</h2>
+        <span>Mifflin-St. Jeor equation</span>
+
+        <!-- Create Post (field names match controllers/posts.js) -->
+        <form action="/post/createPost" enctype="multipart/form-data" method="POST">
+          <div class="mb-3">
+            <label for="gender" class="form-label">Sex:</label>
+            <select name="gender" id="gender" class="form-select">
+              <option value="male" selected>Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="weight" class="form-label">Weight (kg)</label>
+            <input type="number" step="0.1" class="form-control" id="weight" name="weight" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="height" class="form-label">Height (cm)</label>
+            <input type="number" step="0.1" class="form-control" id="height" name="height" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="age" class="form-label">Age (years)</label>
+            <input type="number" class="form-control" id="age" name="age" required>
+          </div>
+
+          <div class="mb-3">
+            <label for="activityLevel" class="form-label">Choose an activity level:</label>
+            <select name="activityLevel" id="activityLevel" class="form-select">
+              <option value="sedentary" selected>Sedentary</option>
+              <option value="lightly_active">Lightly Active</option>
+              <option value="moderately_active">Moderately Active</option>
+              <option value="very_active">Very Active</option>
+              <option value="extra_active">Extra Active</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label for="imageUpload" class="form-label">Image</label>
+            <input type="file" class="form-control" id="imageUpload" name="file" accept="image/*" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
+        </form>
+
+        <h2 class="mt-4">Step 2: Decide Your Ideal Macronutrient Breakdown</h2>
+      </div>
+    </div>
+
+    <div class="col-6">
+      <ul class="row list-unstyled">
+        <% for (var i = 0; i < posts.length; i++) { %>
           <li class="col-6 justify-content-between mt-5">
-            <a href="/post/<%= posts[i]._id%>">
-              <img class="img-fluid" src="<%= posts[i].image%>">
+            <a href="/post/<%= posts[i]._id %>">
+              <img class="img-fluid" src="<%= posts[i].image %>" alt="Post image">
             </a>
-            <span>TDEE: <%= posts[i].tdee %></span>
+            <div class="mt-2"><span>TDEE: <%= posts[i].tdee %></span></div>
           </li>
         <% } %>
-        </ul>
-        <div class="row justify-content-center mt-5">
-          <a class="btn btn-primary" href="/feed">Return to Feed</a>
-        </div>  
-      </div>  
+      </ul>
+
+      <div class="row justify-content-center mt-5">
+        <a class="btn btn-primary" href="/feed">Return to Feed</a>
+      </div>
     </div>
   </div>
 </div>

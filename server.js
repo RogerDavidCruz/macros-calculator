@@ -2,8 +2,8 @@ require("dotenv").config({ path: "./config/.env" });
 
 const express = require("express");
 const app = express();
+const port = process.env.PORT || 9090;
 
-const port = process.env.PORT || 9090; // will read from .env now
 const mongoose = require("mongoose");
 const passport = require("passport");
 const session = require("express-session");
@@ -15,23 +15,23 @@ const connectDB = require("./config/database");
 const mainRoutes = require("./routes/main");
 const postRoutes = require("./routes/posts");
 
-// If running behind a proxy (Render/Heroku/etc.), trust the proxy in production
+// If behind a proxy (Render/Heroku)
 if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
-// TEMP sanity checks — remove after it works
+// Debug info (safe to remove later)
 console.log("NODE_ENV =", process.env.NODE_ENV);
 console.log("PORT     =", process.env.PORT);
-console.log("DB_STRING defined? ", Boolean(process.env.DB_STRING));
+console.log("DB_STRING defined?", Boolean(process.env.DB_STRING));
 
 // Passport config
 require("./config/passport")(passport);
 
-// Connect to database
+// Connect to DB
 connectDB();
 
-// Using EJS for views
+// View engine
 app.set("view engine", "ejs");
 
 // Static folder
@@ -44,10 +44,10 @@ app.use(express.json());
 // Logging
 app.use(logger("dev"));
 
-// Use forms for PUT/DELETE
+// Method override
 app.use(methodOverride("_method"));
 
-// Set up sessions - stored in MongoDB
+// Sessions (Mongo store)
 app.use(
   session({
     secret: process.env.SESSION_SECRET || "keyboard doge",
@@ -62,12 +62,20 @@ app.use(
   })
 );
 
-// Passport middleware
+// Passport
 app.use(passport.initialize());
 app.use(passport.session());
 
 // Flash messages
 app.use(flash());
+
+// Prevent caching of authed pages (best before routes)
+app.use((req, res, next) => {
+  res.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+  res.set("Pragma", "no-cache");
+  res.set("Expires", "0");
+  next();
+});
 
 // Routes
 app.use("/", mainRoutes);
@@ -75,7 +83,5 @@ app.use("/post", postRoutes);
 
 // Server
 app.listen(port, () => {
-  console.log(
-    `Server is running smoothly, keep up the pace on localhost: ${port}`
-  );
+  console.log(`Server running at http://localhost:${port}`);
 });

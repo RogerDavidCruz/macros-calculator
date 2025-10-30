@@ -47,21 +47,27 @@ exports.postLogin = (req, res, next) => {
 };
 
 /**
- * GET /logout
+ * POST /logout
  * Passport 0.6 requires a callback.
  */
 exports.logout = (req, res, next) => {
   req.logout(function (err) {
     if (err) return next(err);
     req.session.destroy((destroyErr) => {
-      if (destroyErr) {
-        console.log("Error destroying session during logout:", destroyErr);
-      }
+      if (destroyErr) console.log("Error destroying session during logout:", destroyErr);
+      // Clear cookie explicitly (Render/Cloudflare + proxies)
+      res.clearCookie("connect.sid", {
+        path: "/",
+        httpOnly: true,
+        sameSite: "lax",
+        secure: process.env.NODE_ENV === "production",
+      });
       req.user = null;
       return res.redirect("/");
     });
   });
 };
+
 
 /**
  * GET /signup
